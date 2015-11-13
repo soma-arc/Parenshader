@@ -1,0 +1,20 @@
+language: common-lisp
+sudo: false
+
+install:
+  - curl -L https://raw.githubusercontent.com/snmsts/roswell/release/scripts/install-for-ci.sh | sh
+
+cache:
+    directories:
+        - $HOME/.roswell
+
+script:
+  - ros -s prove -e '(or (prove:run :parenshader-test) (uiop:quit -1))'
+
+env:
+    matrix:
+        - LISP=sbcl-bin
+        - LISP=ccl-bin
+    global:
+        - PATH=~/.roswell/bin:$PATH
+        - ROSWELL_INSTALL_DIR=$HOME/.roswell
