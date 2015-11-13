@@ -7,8 +7,10 @@
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :parenshader)' in your Lisp.
 
-(plan nil)
+(plan 2)
 
-;; blah blah blah.
+(is (analyze 6) '(:expr :literal 6 nil))
+
+(is (analyze 'hoge) '(:expr :sym (hoge "HOGE") nil))
 
 (finalize)
