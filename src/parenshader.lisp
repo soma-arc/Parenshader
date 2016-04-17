@@ -125,8 +125,6 @@
                               (list type (mapcar #'analyze args) name)
                               (mapcar #'analyze body))))
 
-(analyze '(defun hogehoge int (1 2 3) 'hoge))
-
 (defun get-fun-type (node)
   (first (get-data node)))
 

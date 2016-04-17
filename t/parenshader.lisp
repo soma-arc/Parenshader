@@ -11,13 +11,13 @@
 
 (is (analyze 6) '(:expr :value 6 nil))
 
-(is (analyze 'hoge) '(:expr :sym (hoge "HOGE") nil))
+(is (analyze 'hoge) '(:expr :sym (hoge "hoge") nil))
 
 (is (translate (analyze 3)) "3")
 
-(is (translate (analyze 'hoge)) "HOGE")
+(is (translate (analyze 'hoge)) "hoge")
 
-(is (translate (analyze '(hoge foo bar))) "HOGE(FOO, BAR)")
+(is (translate (analyze '(hoge foo bar))) "hoge(foo, bar)")
 
 (is (translate (analyze '(return 2))) "return 2; ")
 
