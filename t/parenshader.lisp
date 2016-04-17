@@ -9,7 +9,7 @@
 
 (plan 6)
 
-(is (analyze 6) '(:expr :literal 6 nil))
+(is (analyze 6) '(:expr :value 6 nil))
 
 (is (analyze 'hoge) '(:expr :sym (hoge "HOGE") nil))
 

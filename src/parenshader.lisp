@@ -21,9 +21,9 @@
 
 
 ;;an-symbol        -- analyzer for symbol
-;;an-literal       -- analyzer for literal
+;;an-value       -- analyzer for value
 ;;ann-default-pair -- analyzer for default pair
-(defun make-analyzer (an-symbol an-literal an-default-pair)
+(defun make-analyzer (an-symbol an-value an-default-pair)
   (labels ((an-pair (expr)
              (let* ((name (car expr))
                     (pair-analyzer (gethash name *pair-analyzers*)))
@@ -34,7 +34,7 @@
       (cond
         ((symbolp expr) (funcall an-symbol expr))
         ((consp expr)   (an-pair expr))
-        (t              (funcall an-literal expr))))))
+        (t              (funcall an-value expr))))))
 
 ;;------------------------------------------------------
 (defun analyze-symbol (expr)
@@ -46,11 +46,11 @@
 (defun get-sym-name (sym-node)
   (second (get-data sym-node)))
 ;;------------------------------------------------------
-(defun analyze-literal (expr)
-  (classify :expr :literal expr))
+(defun analyze-value (expr)
+  (classify :expr :value expr))
 
-(defun get-literal-value (literal-node)
-  (get-data literal-node))
+(defun get-value-value (value-node)
+  (get-data value-node))
 ;;------------------------------------------------------
 
 (defun analyze-pair (expr)
@@ -65,7 +65,7 @@
   (get-rest call-node))
 
 (setf (symbol-function 'analyze) (make-analyzer #'analyze-symbol
-                                                #'analyze-literal
+                                                #'analyze-value
                                                 #'analyze-pair))
 
 (defun translate (node)
@@ -82,8 +82,8 @@
 (deftranslator node :sym
   (get-sym-name node))
 
-(deftranslator node :literal
-  (format nil "~a" (get-literal-value node)))
+(deftranslator node :value
+  (format nil "~a" (get-value-value node)))
 
 (deftranslator node :call
   (let ((f (translate (get-call-function node)))
@@ -107,6 +107,7 @@
   `(regist-pair-analyzer ',sym
                          (optima.extra:lambda-match ,@clauses)))
 
+;;return
 (defanalyzer return ((list op expr)
                      (declare (ignorable op))
                      (classify :stat :return '() (analyze expr))))
