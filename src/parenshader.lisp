@@ -1,8 +1,6 @@
 (in-package :cl-user)
 (defpackage parenshader
-  (:use :cl)
-  (:import-from :optima
-                :match)
+  (:use :cl :optima.extra)
   (:export :analyze
            :translate))
 (in-package :parenshader)
@@ -21,6 +19,10 @@
 (defun get-rest (node)
   (fourth node))
 
+
+;;an-symbol        -- analyzer for symbol
+;;an-literal       -- analyzer for literal
+;;ann-default-pair -- analyzer for default pair
 (defun make-analyzer (an-symbol an-literal an-default-pair)
   (labels ((an-pair (expr)
              (let* ((name (car expr))
@@ -56,6 +58,7 @@
             :call
             (list (analyze (car expr)))
             (mapcar #'analyze (cdr expr))))
+
 (defun get-call-function (call-node)
   (first (get-data call-node)))
 (defun get-call-args (call-node)
@@ -95,4 +98,22 @@
                        (princ sep s)
                        (fn (cdr list))))))
      (fn list))))
+
+
+(defun regist-pair-analyzer (sym f)
+  (setf (gethash sym *pair-analyzers*) f))
+
+(defmacro defanalyzer (sym &body clauses)
+  `(regist-pair-analyzer ',sym
+                         (optima.extra:lambda-match ,@clauses)))
+
+(defanalyzer return ((list op expr)
+                     (declare (ignorable op))
+                     (classify :stat :return '() (analyze expr))))
+
+(defun get-return-expr (node)
+  (get-rest node))
+
+(deftranslator node :return
+  (format nil "return ~a; " (translate (get-return-expr node))))
 
