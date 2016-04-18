@@ -18,7 +18,8 @@
   :license "LLGPL"
   :depends-on (:optima
                :named-readtables
-               :fare-quasiquote-extras)
+               :fare-quasiquote-extras
+               :split-sequence)
   :components ((:module "src"
                 :components
                 ((:file "parenshader"))))
