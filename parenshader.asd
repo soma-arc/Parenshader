@@ -16,7 +16,9 @@
   :version "0.1"
   :author "soma_arc"
   :license "LLGPL"
-  :depends-on (:optima)
+  :depends-on (:optima
+               :named-readtables
+               :fare-quasiquote-extras)
   :components ((:module "src"
                 :components
                 ((:file "parenshader"))))

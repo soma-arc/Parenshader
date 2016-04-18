@@ -1,9 +1,10 @@
 (in-package :cl-user)
 (defpackage parenshader
-  (:use :cl :optima.extra)
+  (:use :cl :optima.extra :fare-quasiquote :named-readtables)
   (:export :analyze
            :translate))
 (in-package :parenshader)
+(in-readtable :fare-quasiquote)
 
 (defparameter *pair-analyzers* (make-hash-table))
 (defparameter *translators*  (make-hash-table))
@@ -154,3 +155,4 @@
          (body (translate-body (get-fun-body node))))
     (format nil "~a ~a (~a) {~%~a}~%" type name args body)))
 
+(named-readtables:in-readtable :standard)
