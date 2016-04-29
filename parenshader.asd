@@ -22,7 +22,10 @@
                :split-sequence)
   :components ((:module "src"
                 :components
-                ((:file "parenshader"))))
+                ((:file "package")
+                 (:file "core")
+                 (:file "type")
+                 (:file "defun"))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames
