@@ -25,7 +25,8 @@
                 ((:file "package")
                  (:file "core")
                  (:file "type")
-                 (:file "defun"))))
+                 (:file "defun")
+                 (:file "op"))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames
