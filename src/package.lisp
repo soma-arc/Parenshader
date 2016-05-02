@@ -3,4 +3,5 @@
 (defpackage parenshader
   (:use :cl :optima.extra :fare-quasiquote :named-readtables :split-sequence)
   (:export #:analyze
-           #:translate))
+           #:translate
+           #:psh))

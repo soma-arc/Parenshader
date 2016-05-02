@@ -15,7 +15,6 @@
 (defun get-rest (node)
   (fourth node))
 
-
 ;;an-symbol        -- analyzer for symbol
 ;;an-value       -- analyzer for value
 ;;ann-default-pair -- analyzer for default pair
@@ -96,7 +95,7 @@
 	(args (mapcar #'translate (get-call-args node))))
     (format nil "~a(~a)" f (string-join args ", "))))
 
-(defun string-join (list sep)
+(defun string-join (list &optional (sep ""))
  (with-output-to-string (s)
    (labels ((fn (list)
               (cond ((null (cdr list)) (princ (car list) s))
@@ -113,5 +112,11 @@
   `(regist-pair-analyzer ',sym
                          (optima.extra:lambda-match ,@clauses)))
 
-(named-readtables:in-readtable :standard)
+(defun psh (expr)
+  (string-join
+   (mapcar (lambda (body)
+             (translate-body-node
+              (analyze body)))
+           expr)))
 
+(named-readtables:in-readtable :standard)
