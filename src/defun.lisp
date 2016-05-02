@@ -10,7 +10,7 @@
   (get-rest node))
 
 (deftranslator node :return
-  (format nil "return ~a; " (translate (get-return-expr node))))
+  (format nil "return ~a;" (translate (get-return-expr node))))
 
 ;;defun
 (defanalyzer defun (`(,op ,name ,type ,args ,@body)
@@ -36,6 +36,6 @@
          (name (string-downcase (get-fun-name node)))
          (args (translate-args (get-fun-args node)))
          (body (translate-body (get-fun-body node))))
-    (format nil "~a ~a (~a) {~%~a}~%" type name args body)))
+    (format nil "~a ~a (~a) {~%~a}" type name args body)))
 
 (named-readtables:in-readtable :standard)
