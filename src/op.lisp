@@ -38,16 +38,16 @@
 (defvar +binops+ (append +multi-binops+ +multi-aliased+ +single-binops+))
 
 (defvar +real-ops+
-  (let ((ht (make-hash-table)))
+  (let ((ht (make-hash-table :test 'equalp)))
     (loop for (key . value) in +binops+
-       do (setf (gethash key ht) value))
+       do (setf (gethash (string key) ht) value))
     ht))
 
 (defun an-binops ()
   (optima.extra:lambda-match
     ((list op a b)
      (classify :expr :binop
-               (list op (string (gethash op +real-ops+)))
+               (list op (string (gethash (string op) +real-ops+)))
                (list (analyze a) (analyze b))))))
 
 (mapcar (lambda (ops)
@@ -67,4 +67,3 @@
     (format nil "(~a) ~a (~a)" (first args) name (second args))))
 
 (named-readtables:in-readtable :standard)
-(translate (analyze '(and 1 2)))
