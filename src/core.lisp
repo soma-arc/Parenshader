@@ -68,6 +68,16 @@
   (funcall (gethash (get-kind node) *translators*)
 	   node))
 
+(defun translate-args (args)
+  (string-join (mapcar #'translate args) ", "))
+
+(defun translate-body-node (node)
+  (let ((str (translate node)))
+    (format nil "~A~A~%" str (if (eq (get-tag node) :expr) ";" ""))))
+
+(defun translate-body (body)
+  (string-join (mapcar #'translate-body-node body)))
+
 (defun regist-translator (kind f)
   (setf (gethash kind *translators*) f))
 

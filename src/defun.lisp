@@ -31,16 +31,6 @@
 (defun get-fun-body (node)
   (get-rest node))
 
-(defun translate-args (args)
-  (string-join (mapcar #'translate args) ", "))
-
-(defun translate-body-node (node)
-  (let ((str (translate node)))
-    (format nil "~A~A~%" str (if (eq (get-tag node) :expr) ";" ""))))
-
-(defun translate-body (body)
-  (string-join (mapcar #'translate-body-node body) ""))
-
 (deftranslator node :defun
   (let* ((type (string-downcase (get-fun-type node)))
          (name (string-downcase (get-fun-name node)))
