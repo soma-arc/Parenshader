@@ -26,7 +26,8 @@
                  (:file "core")
                  (:file "type")
                  (:file "defun")
-                 (:file "op"))))
+                 (:file "op")
+                 (:file "syntax"))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames

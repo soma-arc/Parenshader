@@ -7,7 +7,7 @@
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :parenshader)' in your Lisp.
 
-(plan 14)
+(plan nil)
 
 (is (analyze 6) '(:expr :value 6 nil))
 
@@ -45,5 +45,8 @@
                   (return (binop-plus a b)))
            (add hoge foo)))
     (format nil "int hoge = 1;~%float foo = 2.0;~%int add (a, b) {~%return (a) + (b);~%}~%add(hoge, foo);~%"))
+
+(is (translate (analyze '(setf hoge (binop-plus 10 10))))
+    "hoge = (10) + (10)")
 
 (finalize)
