@@ -9,44 +9,68 @@
 
 (plan nil)
 
-(is (analyze 6) '(:expr :value 6 nil))
+(subtest "Testing core"
+  (is (analyze 6) '(:expr :value 6 nil))
 
-(is (analyze 'hoge) '(:expr :sym (hoge "hoge") nil))
+  (is (analyze 'hoge) '(:expr :sym (hoge "hoge") nil))
 
-(is (translate (analyze 3)) "3")
+  (is (translate (analyze 3)) "3")
 
-(is (translate (analyze 'hoge)) "hoge")
+  (is (translate (analyze 'hoge)) "hoge")
 
-(is (translate (analyze '(hoge foo bar))) "hoge(foo, bar)")
+  (is (translate (analyze '(hoge foo bar))) "hoge(foo, bar)"))
 
-(is (translate (analyze '(return 2))) "return 2;")
+(subtest "Testing return"
+  (is (translate (analyze '(return 2))) "return 2;"))
 
-(is (translate (analyze '(int 100))) "int 100")
-(is (translate (analyze '(int n 100))) "int n = 100")
+(subtest "Testing type"
+  (is (translate (analyze '(int 100))) "int 100")
+  (is (translate (analyze '(int n 100))) "int n = 100"))
 
-(is (translate (analyze '(defun hoge int ((int hoge) (int foo))
-                          (int f 100))))
-    (format nil "int hoge (int hoge, int foo) {~%int f = 100;~%}"))
+(subtest "Testing defun"
+  (is (translate (analyze '(defun hoge int ((int hoge) (int foo))
+                            (int f 100))))
+      (format nil "int hoge (int hoge, int foo) {~%int f = 100;~%}"))
 
-(is (translate (analyze '(defun hoge void ((int hoge))
-                          (int f 100))))
-    (format nil "void hoge (int hoge) {~%int f = 100;~%}"))
+  (is (translate (analyze '(defun hoge void ((int hoge))
+                            (int f 100))))
+      (format nil "void hoge (int hoge) {~%int f = 100;~%}")))
 
-(is (translate (analyze '(>= 1 2)))
-    "(1) >= (2)")
-(is (translate (analyze '(<= 1 2)))
-    "(1) <= (2)")
-(is (translate (analyze '(= 1 2)))
-    "(1) == (2)")
+(subtest "Testing binop"
+  (is (translate (analyze '(>= 1 2)))
+      "(1) >= (2)")
+  (is (translate (analyze '(<= 1 2)))
+      "(1) <= (2)")
+  (is (translate (analyze '(= 1 2)))
+      "(1) == (2)"))
 
-(is (psh '((int hoge 1)
-           (float foo 2.0)
-           (defun add int (a b)
-                  (return (binop-plus a b)))
-           (add hoge foo)))
-    (format nil "int hoge = 1;~%float foo = 2.0;~%int add (a, b) {~%return (a) + (b);~%}~%add(hoge, foo);~%"))
+(subtest "Testing psh"
+  (is (psh '((int hoge 1)
+             (float foo 2.0)
+             (defun add int (a b)
+                    (return (binop-plus a b)))
+             (add hoge foo)))
+      (format nil "int hoge = 1;~%float foo = 2.0;~%int add (a, b) {~%return (a) + (b);~%}~%add(hoge, foo);~%")))
 
-(is (translate (analyze '(setf hoge (binop-plus 10 10))))
-    "hoge = (10) + (10)")
+(subtest "Testing setf"
+  (is (translate (analyze '(setf hoge (binop-plus 10 10))))
+      "hoge = (10) + (10)"))
+
+(subtest "Testing if"
+  (is (translate (analyze
+                  '(if (= 1 1)
+                    (setf hoge 10)
+                    (setf hoge 20))))
+      (format nil
+              "if (~a) {~%~a;~%} else {~%~a;~%}"
+              "(1) == (1)"
+              "hoge = 10"
+              "hoge = 20"))
+  (is (translate (analyze '(if (= 1 1)
+                            (setf hoge 10))))
+      (format nil
+              "if (~a) {~%~a;~%}"
+              "(1) == (1)"
+              "hoge = 10")))
 
 (finalize)
