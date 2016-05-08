@@ -73,4 +73,14 @@
               "(1) == (1)"
               "hoge = 10")))
 
+(subtest "Testing when"
+  (is (translate (analyze '(when (= 1 1)
+                            (setf hoge 100)
+                            (setf foo 200))))
+      (format nil
+              "if (~a) {~%~a~%~a~%}"
+              "(1) == (1)"
+              "hoge = 100;"
+              "foo = 200;")))
+
 (finalize)
