@@ -59,4 +59,28 @@
         (body (translate-body (get-when-body node))))
     (format nil "if (~a) {~%~a}" test body)))
 
+(defanalyzer for
+  (`(,op ,(list init test fin) ,@body)
+    (declare (ignorable op))
+    (classify :stat :for
+              (list (analyze init) (analyze test) (analyze fin))
+              (mapcar #'analyze body))))
+
+(defun get-for-init (node)
+  (first (get-data node)))
+(defun get-for-test (node)
+  (second (get-data node)))
+(defun get-for-fin (node)
+  (third (get-data node)))
+(defun get-for-body (node)
+  (get-rest node))
+
+(deftranslator node :for
+  (let* ((init (translate (get-for-init node)))
+         (test (translate (get-for-test node)))
+         (fin (translate (get-for-fin node)))
+         (body (translate-body (get-for-body node))))
+    (format nil "for (~a; ~a; ~a) {~%~a}"
+            init test fin body)))
+
 (in-readtable :standard)

@@ -83,4 +83,12 @@
               "hoge = 100;"
               "foo = 200;")))
 
+(subtest "Testing for"
+  (is (translate (analyze '(for ((int i 0) (< i 100) (setf i (binop-plus i 1)))
+                            (int hoge 100)
+                            (setf hoge 100))))
+      (format nil "for (~a; ~a; ~a) {~%~a~%~a~%}"
+              "int i = 0" "(i) < (100)" "i = (i) + (1)"
+              "int hoge = 100;" "hoge = 100;")))
+
 (finalize)
