@@ -91,4 +91,42 @@
               "int i = 0" "(i) < (100)" "i = (i) + (1)"
               "int hoge = 100;" "hoge = 100;")))
 
+(subtest "Testing cond"
+  (is (translate (analyze '(cond
+                            ((< i 10)
+                             (setf hoge 100)
+                             (setf foo (binop-plus 100 bar)))
+                            ((< i 20)
+                             (setf hoge 200)
+                             (setf foo (binop-plus 200 bar)))
+                            (t
+                             (setf hoge 0)
+                             (return hoge)))))
+      (format nil "if (~a) {~%~a~%} else if (~a) {~%~a~%} else {~%~a~%}"
+              "(i) < (10)" (format nil "hoge = 100;~%foo = (100) + (bar);")
+              "(i) < (20)" (format nil "hoge = 200;~%foo = (200) + (bar);")
+              (format nil "hoge = 0;~%return hoge;")))
+  (is (translate (analyze '(cond
+                            ((< i 10)
+                             (setf hoge 100)
+                             (setf foo (binop-plus 100 bar)))
+                            ((< i 20)
+                             (setf hoge 200)
+                             (setf foo (binop-plus 200 bar))))))
+      (format nil "if (~a) {~%~a~%} else if (~a) {~%~a~%}"
+              "(i) < (10)" (format nil "hoge = 100;~%foo = (100) + (bar);")
+              "(i) < (20)" (format nil "hoge = 200;~%foo = (200) + (bar);")))
+  (is (translate (analyze '(cond
+                            ((< i 10)
+                             (setf hoge 100)
+                             (setf foo (binop-plus 100 bar))))))
+      (format nil "if (~a) {~%~a~%}"
+              "(i) < (10)" (format nil "hoge = 100;~%foo = (100) + (bar);")))
+  (is (translate (analyze '(cond
+                            (t
+                             (setf hoge 0)
+                             (return hoge)))))
+      (format nil "~a~%"
+              (format nil "hoge = 0;~%return hoge;"))))
+
 (finalize)

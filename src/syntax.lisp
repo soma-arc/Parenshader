@@ -44,6 +44,47 @@
         (format nil "if (~a) {~%~a;~%} else {~%~a;~%}" test true false)
         (format nil "if (~a) {~%~a;~%}" test true))))
 
+(defanalyzer cond
+  (`(,op ,@clauses)
+    (declare (ignorable op))
+    (let* ((conditions '())
+           (else-body nil))
+      (loop for clause in clauses do
+           (optima:match clause
+             (`(t ,@body)
+               (setf else-body (mapcar #'analyze body)))
+             (`(,test ,@body)
+               (push (list (analyze test) (mapcar #'analyze body))
+                     conditions))))
+      (classify :stat :cond (list (nreverse conditions) else-body)))))
+
+(defun get-cond-conditions (node)
+  (first (get-data node)))
+(defun get-cond-else-body (node)
+  (second (get-data node)))
+
+(deftranslator node :cond
+  (let* ((conditions (mapcar (lambda (condition)
+                               (list (translate (first condition))
+                                     (translate-body (second condition))))
+                             (get-cond-conditions node)))
+         (else-body (get-cond-else-body node))
+         (else-body (if else-body (translate-body else-body) nil))
+         (result '()))
+    (cond ((and (= 0 (length conditions)) else-body)
+           else-body)
+          (t
+           (push (format nil "if (~a) {~%~a}"
+                         (caar conditions) (second (first conditions)))
+                 result)
+           (loop for condition in (cdr conditions) do
+                (push (format nil " else if (~a) {~%~a}"
+                              (first condition) (second condition))
+                      result))
+           (if else-body (push (format nil " else {~%~a}" else-body)
+                               result))
+           (string-join (nreverse result))))))
+
 (defanalyzer when
   (`(,op ,test ,@body)
     (declare (ignorable op))
