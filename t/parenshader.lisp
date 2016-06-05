@@ -129,4 +129,19 @@
       (format nil "~a~%"
               (format nil "hoge = 0;~%return hoge;"))))
 
+(subtest "Testing chain"
+  (is (translate (analyze '(@ vec x)))
+      (format nil "(vec).x"))
+  (is (translate (analyze '(@ vec xxy)))
+      (format nil "(vec).xxy")))
+
+(subtest "Testing var"
+  (is (psh '((uniform vec3 hoge)
+	     (varying float foo)
+	     (attribute int i)))
+      (format nil "~a~%~a~%~a~%"
+	      "uniform vec3 hoge;"
+	      "varying float foo;"
+	      "attribute int i;")))
+
 (finalize)
