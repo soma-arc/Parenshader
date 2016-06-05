@@ -18,6 +18,18 @@
 
   (is (translate (analyze 'hoge)) "hoge")
 
+  (is (translate (analyze '(int hoge-foo-bar)))
+      "int hogeFooBar")
+
+  (is (translate (analyze '(int +hoge-foo-bar+)))
+      "int HOGE_FOO_BAR")
+
+  (is (translate (analyze '(int +hoge+bar+)))
+      "int HOGE_PLUS_BAR")
+
+  (is (translate (analyze '(int foo!)))
+      "int foo_BANG_")
+  
   (is (translate (analyze '(hoge foo bar))) "hoge(foo, bar)"))
 
 (subtest "Testing return"
@@ -34,7 +46,10 @@
 
   (is (translate (analyze '(defun hoge void ((int hoge))
                             (int f 100))))
-      (format nil "void hoge (int hoge) {~%int f = 100;~%}")))
+      (format nil "void hoge (int hoge) {~%int f = 100;~%}"))
+  (is (translate (analyze '(defun set! void ((int hoge-foo))
+                            (int f hoge-foo))))
+      (format nil "void set_BANG_ (int hogeFoo) {~%int f = hogeFoo;~%}")))
 
 (subtest "Testing binop"
   (is (translate (analyze '(>= 1 2)))
