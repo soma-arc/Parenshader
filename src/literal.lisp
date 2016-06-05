@@ -8,7 +8,7 @@
 
 (defun get-chain-obj (node)
   (first (get-data node)))
-(defun get-chain-args (node)c
+(defun get-chain-args (node)
   (get-rest node))
 
 (deftranslator node :chain
