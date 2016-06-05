@@ -1,7 +1,11 @@
 (in-package :cl-user)
 
 (defpackage parenshader
-  (:use :cl :optima.extra :fare-quasiquote :named-readtables :split-sequence)
+  (:use :cl
+	:optima.extra
+	:fare-quasiquote
+	:named-readtables
+	:cl-ppcre)
   (:export #:analyze
            #:translate
            #:psh))

@@ -19,10 +19,11 @@
   :depends-on (:optima
                :named-readtables
                :fare-quasiquote-extras
-               :split-sequence)
+	       :cl-ppcre)
   :components ((:module "src"
                 :components
                 ((:file "package")
+		 (:file "util")
                  (:file "core")
                  (:file "type")
                  (:file "defun")

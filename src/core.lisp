@@ -85,7 +85,7 @@
     `(regist-translator ,kind ,f)))
 
 (deftranslator node :sym
-  (get-sym-name node))
+  (symbol->glsl-sym (get-sym-sym node)))
 
 (deftranslator node :value
   (format nil "~a" (get-value-value node)))
@@ -94,16 +94,6 @@
   (let ((f (translate (get-call-function node)))
 	(args (mapcar #'translate (get-call-args node))))
     (format nil "~a(~a)" f (string-join args ", "))))
-
-(defun string-join (list &optional (sep ""))
- (with-output-to-string (s)
-   (labels ((fn (list)
-              (cond ((null (cdr list)) (princ (car list) s))
-                    (t (princ (car list) s)
-                       (princ sep s)
-                       (fn (cdr list))))))
-     (fn list))))
-
 
 (defun regist-pair-analyzer (sym f)
   (setf (gethash (string sym) *pair-analyzers*) f))

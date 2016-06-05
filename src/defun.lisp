@@ -32,8 +32,8 @@
   (get-rest node))
 
 (deftranslator node :defun
-  (let* ((type (string-downcase (get-fun-type node)))
-         (name (string-downcase (get-fun-name node)))
+  (let* ((type (symbol->glsl-sym (get-fun-type node)))
+         (name (symbol->glsl-sym (get-fun-name node)))
          (args (translate-args (get-fun-args node)))
          (body (translate-body (get-fun-body node))))
     (format nil "~a ~a (~a) {~%~a}" type name args body)))
