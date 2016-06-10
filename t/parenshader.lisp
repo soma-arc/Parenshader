@@ -159,4 +159,12 @@
 	      "varying float foo;"
 	      "attribute int i;")))
 
+(subtest "Testing type-conv"
+  (is (translate (analyze '(@vec2 1 2)))
+      "vec2(1, 2)")
+  (is (translate (analyze '(@vec3 1 2 3)))
+      "vec3(1, 2, 3)")
+  (is (translate (analyze '(@vec4 hoge 2 3)))
+      "vec4(hoge, 2, 3)"))
+
 (finalize)

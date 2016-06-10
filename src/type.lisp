@@ -73,4 +73,15 @@
         (format nil "~a ~a" type var)
         (format nil "~a ~a = ~a" type var (translate (get-type-val node))))))
 
+(defun regist-type-conv (sym)
+  (let ((converted (intern (concatenate 'string
+					"@"
+					(symbol-name sym)))))
+    (regist-pair-analyzer converted
+			  (lambda (expr)
+			    (let ((fn (analyze sym))
+				  (args (mapcar #'analyze (cdr expr))))
+			      (classify :expr :call (list fn) args))))))
+(mapcar #'regist-type-conv +types+)
+
 (named-readtables:in-readtable :standard)
