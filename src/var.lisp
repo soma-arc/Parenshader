@@ -8,7 +8,7 @@
 
 (mapcar (lambda (var)
 	  (regist-pair-analyzer var (an-var)))
-	'(uniform varying attribute))
+	'(uniform varying attribute in out))
 
 (defun get-var-name (node)
   (first (get-data node)))
@@ -22,5 +22,15 @@
 	  (translate (get-var-name node))
 	  (translate (get-var-type node))
 	  (translate (get-var-var node))))
+
+(defanalyzer const ((list op expr)
+		    (declare (ignorable op))
+		    (classify :stat :const '() (analyze expr))))
+
+(defun get-const-expr (node)
+  (get-rest node))
+
+(deftranslator node :const
+  (format nil "const ~a;" (translate (get-const-expr node))))
 
 (in-readtable :standard)

@@ -153,11 +153,17 @@
 (subtest "Testing var"
   (is (psh '((uniform vec3 hoge)
 	     (varying float foo)
-	     (attribute int i)))
-      (format nil "~a~%~a~%~a~%"
+	     (attribute int i)
+	     (out vec4 frag-color)
+	     (in vec2 frag-coord)
+	     (const (float foo 1.2))))
+      (format nil "~a~%~a~%~a~%~a~%~a~%~a~%"
 	      "uniform vec3 hoge;"
 	      "varying float foo;"
-	      "attribute int i;")))
+	      "attribute int i;"
+	      "out vec4 fragColor;"
+	      "in vec2 fragCoord;"
+	      "const float foo = 1.2;")))
 
 (subtest "Testing type-conv"
   (is (translate (analyze '(@vec2 1 2)))
@@ -167,7 +173,7 @@
   (is (translate (analyze '(@vec4 hoge 2 3)))
       "vec4(hoge, 2, 3)"))
 
-(subtest "macro"
+(subtest "Testing macro"
   (is (pshmacroexpand '(+ 1 2 3))
       '(PARENSHADER::BINOP-PLUS 1 (PARENSHADER::BINOP-PLUS 2 3)))
   (is (pshmacroexpand '(+ 1 2 3 (- 3 4 5)))
@@ -179,5 +185,11 @@
       (format nil "(1) + ((2) + (3));~%"))
   (is (psh '((+ 1 2 3 (- 3 4 5))))
       (format nil "(1) + ((2) + ((3) + ((3) - ((4) - (5)))));~%")))
+
+(subtest "Testing all"
+  (is (psh '((defun main-image void ((out vec4 frag-color) (in vec2 frag-coord))
+		    (vec2 uv (/ (@ frag-coord xy) (@ i-resolution xy)))
+		    (setf frag-color (@vec4 uv (+ 0.5 (* 0.5 (sin i-global-time))) 1)))))
+      (format nil "void mainImage (out vec4 fragColor;, in vec2 fragCoord;) {~%vec2 uv = ((fragCoord).xy) / ((iResolution).xy);~%fragColor = vec4(uv, (0.5) + ((0.5) * (sin(iGlobalTime))), 1);~%}~%")))
 
 (finalize)
