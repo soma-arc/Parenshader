@@ -30,7 +30,8 @@
                  (:file "op")
                  (:file "syntax")
 		 (:file "literal")
-		 (:file "var"))))
+		 (:file "var")
+		 (:file "macro"))))
   :description ""
   :long-description
   #.(with-open-file (stream (merge-pathnames

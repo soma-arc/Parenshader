@@ -106,7 +106,8 @@
   (string-join
    (mapcar (lambda (body)
              (translate-body-node
-              (analyze body)))
+              (analyze (pshmacroexpand body))))
            expr)))
 
 (named-readtables:in-readtable :standard)
+

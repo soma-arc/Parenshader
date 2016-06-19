@@ -8,4 +8,6 @@
 	:cl-ppcre)
   (:export #:analyze
            #:translate
-           #:psh))
+           #:psh
+	   #:pshmacroexpand
+	   #:pshmacroexpand-1))

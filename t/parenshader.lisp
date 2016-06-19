@@ -167,4 +167,17 @@
   (is (translate (analyze '(@vec4 hoge 2 3)))
       "vec4(hoge, 2, 3)"))
 
+(subtest "macro"
+  (is (pshmacroexpand '(+ 1 2 3))
+      '(PARENSHADER::BINOP-PLUS 1 (PARENSHADER::BINOP-PLUS 2 3)))
+  (is (pshmacroexpand '(+ 1 2 3 (- 3 4 5)))
+      '(PARENSHADER::BINOP-PLUS 1
+	(PARENSHADER::BINOP-PLUS 2
+	 (PARENSHADER::BINOP-PLUS 3
+	  (PARENSHADER::BINOP-MINUS 3 (PARENSHADER::BINOP-MINUS 4 5))))))
+  (is (psh '((+ 1 2 3)))
+      (format nil "(1) + ((2) + (3));~%"))
+  (is (psh '((+ 1 2 3 (- 3 4 5))))
+      (format nil "(1) + ((2) + ((3) + ((3) - ((4) - (5)))));~%")))
+
 (finalize)
